@@ -3,6 +3,10 @@ const dropbox = document.querySelector("body"),
     list = document.querySelector("#images"),
     canvas = document.querySelector("#out");
 
+const downloadBtn = document.querySelector("#download"),
+    hiddenLink = document.querySelector("#hiddenlink");
+
+
 function stopEvent(e) {
     // e.stopPropagation();
     e.preventDefault();
@@ -86,9 +90,15 @@ function updateCanvas(images = list.querySelectorAll("img")) {
     //     navigator.clipboard.write([item]);
     //     alert("Copied! paste it on paint");
     // });
+    const d = new Date()
+    // canvas.setAttribute("download", "" + d.getFullYear() + d.getMonth() + d.getDate() + d.getHours() + d.getMinutes() + d.getSeconds());
+    hiddenLink.setAttribute("download", "" + d.getFullYear() + d.getMonth() + d.getDate() + d.getHours() + d.getMinutes() + d.getSeconds())
+    hiddenLink.href = canvas.toDataURL();
+    downloadBtn.disabled = false;
 }
 
 // dropbox.addEventListener("dragenter", stopEvent, false);
 dropbox.addEventListener("dragover", stopEvent, false);
 dropbox.addEventListener("drop", drop, false);
 fileElem.addEventListener("change", function () { hundleFiles(this.files); }, false);
+downloadBtn.addEventListener("click", () => hiddenLink.click());
