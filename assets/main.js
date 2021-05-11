@@ -3,7 +3,6 @@ const dropbox = document.querySelector("body"),
     list = document.querySelector("#images"),
     canvas = document.querySelector("#out");
 
-let imageNum = 0;
 function stopEvent(e) {
     // e.stopPropagation();
     e.preventDefault();
@@ -18,23 +17,26 @@ function drop(e) {
 function hundleFiles(files) {
     if (!files.length) return;
     list.innerHTML = "";
-    imageNum = 0;
+    const loadPromises = [];
     for (let i = 0; i < files.length; i++) {//filesはargumentsのようなオブジェクト(Arrayでない)
         const file = files[i];
         const img = document.createElement("img");
         img.src = URL.createObjectURL(file);
-        img.onload = function () {
-            URL.revokeObjectURL(this.src);
-            imageNum++;
-        }
+        loadPromises.push(new Promise(resolve => {
+            img.onload = function () {
+                URL.revokeObjectURL(this.src);
+                resolve(this);
+            }
+        }));
         list.appendChild(img);
     }
+    Promise.all(loadPromises).then(images => updateCanvas(images))
 }
 const ctx = canvas.getContext("2d");
-function updateCanvas() {
-    if (imageNum < 2) return;
-    const imgUp = list.querySelectorAll("img")[0];
-    const imgLow = list.querySelectorAll("img")[1];
+function updateCanvas(images = list.querySelectorAll("img")) {
+    if (images.length < 2) return;
+    const imgUp = images[0];//list.querySelectorAll("img")[0];
+    const imgLow = images[1];//list.querySelectorAll("img")[1];
     const { naturalWidth, naturalHeight } = imgUp;
     let [width, height, offsetX, offsetY] = [naturalWidth, naturalHeight, 0, 0];
     if (naturalWidth * 9 / 16 > naturalHeight - 0.5) {//iphone等16:9より横長
@@ -90,6 +92,3 @@ function updateCanvas() {
 dropbox.addEventListener("dragover", stopEvent, false);
 dropbox.addEventListener("drop", drop, false);
 fileElem.addEventListener("change", function () { hundleFiles(this.files); }, false);
-
-document.querySelector("button").addEventListener("click", updateCanvas, false);
-
