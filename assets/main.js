@@ -35,29 +35,50 @@ function updateCanvas() {
     if (imageNum < 2) return;
     const imgUp = list.querySelectorAll("img")[0];
     const imgLow = list.querySelectorAll("img")[1];
-    ctx.drawImage(imgUp, 5, 134, 2470, 1235, 0, 0, 2470, 1235);
-    ctx.save();
-    ctx.scale(-1, 1);
-    ctx.drawImage(imgUp, 5, 134, 50, 1235, -2470, 0, 50, 1235);
-    ctx.restore();
+    const { naturalWidth, naturalHeight } = imgUp;
+    let [width, height, offsetX, offsetY] = [naturalWidth, naturalHeight, 0, 0];
+    if (naturalWidth * 9 / 16 > naturalHeight - 0.5) {//iphone等16:9より横長
+        width = naturalHeight * 16 / 9 | 0;
+        offsetX = (naturalWidth - width) / 2 | 0;
+    } else if (((naturalWidth - 2) * 9 / 16 + 32 - naturalHeight) ** 2 < 1) {//DMM win版
+        width = naturalWidth - 2;
+        height = naturalHeight - 32;
+        offsetX = 1;
+        offsetY = 31;
+    }
+    console.log({ width, height, offsetX, offsetY });
+    const header = 0.0525 * width | 0, footer = 0.09025 * width | 0;
+    height -= header + footer;
+    console.log({ width, height, offsetX, offsetY });
+    canvas.width = width;
+    canvas.height = height;
+    // ctx.drawImage(imgUp, 5, 134, 2470, 1235, 0, 0, 2470, 1235);
+    ctx.drawImage(imgUp, offsetX, offsetY + header, width, height, 0, 0, width, height);
+    const frameLeft = width * 0.485 | 0;
+    const frameTop = width * 0.015 | 0;
+    const frameRight = width * 0.995 | 0;
+    const frameCurve = width * 0.002 | 0;
     ctx.beginPath();
-    ctx.moveTo(1265, 1235);
-    ctx.lineTo(1265, 45);
-    ctx.quadraticCurveTo(1265, 40, 1270, 40)
-    ctx.lineTo(2435, 40);
-    ctx.quadraticCurveTo(2440, 40, 2440, 45);
-    ctx.lineTo(2440, 1235);
+    ctx.moveTo(frameLeft, height);
+    ctx.lineTo(frameLeft, frameTop + frameCurve);
+    ctx.quadraticCurveTo(frameLeft, frameTop, frameLeft + frameCurve, frameTop)
+    ctx.lineTo(frameRight - frameCurve, frameTop);
+    ctx.quadraticCurveTo(frameRight, frameTop, frameRight, frameTop + frameCurve);
+    ctx.lineTo(frameRight, height);
     ctx.fillStyle = "rgb(250,250,250)";
     ctx.fill();
     ctx.strokeStyle = "rgb(202,213,241)";
     ctx.stroke();
-    const memoHight = 240
-    const yohakuH = (1235 - 40 - memoHight * 4) / 5 | 0
-    const yohakuW = (2440 - 1265 - 1117) / 2 | 0
-    ctx.drawImage(imgUp, 1325, 484, 1117, memoHight, 1265 + yohakuW, 40 + yohakuH, 1117, memoHight);
-    ctx.drawImage(imgUp, 1325, 772, 1117, memoHight, 1265 + yohakuW, 40 + yohakuH * 2 + memoHight * 1, 1117, memoHight);
-    ctx.drawImage(imgLow, 1325, 849, 1117, memoHight, 1265 + yohakuW, 40 + yohakuH * 3 + memoHight * 2, 1117, memoHight);
-    ctx.drawImage(imgLow, 1325, 1130, 1117, memoHight, 1265 + yohakuW, 40 + yohakuH * 4 + memoHight * 3, 1117, memoHight);
+    const memoWidth = width * 0.4365 | 0;
+    const memoHight = width * 0.09375 | 0;
+    const yohakuH = (height - frameTop - memoHight * 4) / 5 | 0;
+    const yohakuW = (frameRight - frameLeft - memoWidth) / 2 | 0;
+    const memoLeft = offsetX + width * 0.51875 | 0;
+    const memoTop = [offsetY + width * 0.1890 | 0, offsetY + width * 0.3015 | 0, naturalHeight - width * 0.29335 | 0, naturalHeight - footer - memoHight];
+    ctx.drawImage(imgUp, memoLeft, memoTop[0], memoWidth, memoHight, frameLeft + yohakuW, frameTop + yohakuH, memoWidth, memoHight);
+    ctx.drawImage(imgUp, memoLeft, memoTop[1], memoWidth, memoHight, frameLeft + yohakuW, frameTop + yohakuH * 2 + memoHight * 1, memoWidth, memoHight);
+    ctx.drawImage(imgLow, memoLeft, memoTop[2], memoWidth, memoHight, frameLeft + yohakuW, frameTop + yohakuH * 3 + memoHight * 2, memoWidth, memoHight);
+    ctx.drawImage(imgLow, memoLeft, memoTop[3], memoWidth, memoHight, frameLeft + yohakuW, frameTop + yohakuH * 4 + memoHight * 3, memoWidth, memoHight);
     // canvas.toBlob(function (blob) {
     //     const item = new ClipboardItem({ "image/png": blob });
     //     navigator.clipboard.write([item]);
