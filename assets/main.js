@@ -1,11 +1,24 @@
 const dropbox = document.querySelector("body"),
     fileElem = document.querySelector("#fileElem"),
+    fileSelect = document.querySelector("#fileSelect"),
+    download = document.querySelector("#download"),
     list = document.querySelector("#images"),
     canvas = document.querySelector("#out");
 const ctx = canvas.getContext("2d");
-const downloadBtn = document.querySelector("#download"),
-    hiddenLink = document.querySelector("#hiddenlink");
 let sorting = null;
+let canvasUrl = null;
+
+const zeropadding = (num, len = 2) => ("000000" + num).slice(-len);
+const timestamp = (date = new Date(), delimiter = "_") => (
+    ""
+    + date.getFullYear()
+    + zeropadding(1 + date.getMonth())
+    + zeropadding(date.getDate())
+    + delimiter
+    + zeropadding(date.getHours())
+    + zeropadding(date.getMinutes())
+    + zeropadding(date.getSeconds())
+);
 
 function stopEvent(e) {
     // e.stopPropagation();
@@ -93,36 +106,27 @@ async function updateCanvas(images = list.querySelectorAll("img")) {
     ctx.stroke();
     const memoWidth = width * 0.4365 | 0;
     const memoHight = width * 0.09375 | 0;
-    const yohakuH = (height - frameTop - memoHight * 4) / 5 | 0;
-    const yohakuW = (frameRight - frameLeft - memoWidth) / 2 | 0;
+    const marginTop = (height - frameTop - memoHight * 4) / 5 | 0;
+    const marginLeft = (frameRight - frameLeft - memoWidth) / 2 | 0;
     const memoLeft = offsetX + width * 0.51875 | 0;
     const memoTop = [offsetY + width * 0.1890 | 0, offsetY + width * 0.3015 | 0, naturalHeight - width * 0.29335 | 0, naturalHeight - footer - memoHight];
-    ctx.drawImage(imgUp, memoLeft, memoTop[0], memoWidth, memoHight, frameLeft + yohakuW, frameTop + yohakuH, memoWidth, memoHight);
-    ctx.drawImage(imgUp, memoLeft, memoTop[1], memoWidth, memoHight, frameLeft + yohakuW, frameTop + yohakuH * 2 + memoHight * 1, memoWidth, memoHight);
-    ctx.drawImage(imgLow, memoLeft, memoTop[2], memoWidth, memoHight, frameLeft + yohakuW, frameTop + yohakuH * 3 + memoHight * 2, memoWidth, memoHight);
-    ctx.drawImage(imgLow, memoLeft, memoTop[3], memoWidth, memoHight, frameLeft + yohakuW, frameTop + yohakuH * 4 + memoHight * 3, memoWidth, memoHight);
+    ctx.drawImage(imgUp, memoLeft, memoTop[0], memoWidth, memoHight, frameLeft + marginLeft, frameTop + marginTop, memoWidth, memoHight);
+    ctx.drawImage(imgUp, memoLeft, memoTop[1], memoWidth, memoHight, frameLeft + marginLeft, frameTop + marginTop * 2 + memoHight * 1, memoWidth, memoHight);
+    ctx.drawImage(imgLow, memoLeft, memoTop[2], memoWidth, memoHight, frameLeft + marginLeft, frameTop + marginTop * 3 + memoHight * 2, memoWidth, memoHight);
+    ctx.drawImage(imgLow, memoLeft, memoTop[3], memoWidth, memoHight, frameLeft + marginLeft, frameTop + marginTop * 4 + memoHight * 3, memoWidth, memoHight);
     // canvas.toBlob((blob)=>{
     //     const item = new ClipboardItem({ "image/png": blob });
     //     navigator.clipboard.write([item]).then(()=>alert("Copied! paste it on paint"));
     // });
-    const d = new Date()
-    hiddenLink.setAttribute("download", timestamp())
-    hiddenLink.href = canvas.toDataURL();
-    downloadBtn.disabled = false;
+    canvas.toBlob(blob => {
+        if (canvasUrl) URL.revokeObjectURL(canvasUrl);
+        canvasUrl = URL.createObjectURL(blob);
+        download.href = canvasUrl;
+        download.setAttribute("download", timestamp());
+    });
 }
 
 dropbox.addEventListener("dragover", stopEvent, false);
 dropbox.addEventListener("drop", drop, false);
 fileElem.addEventListener("change", function () { hundleFiles(this.files); }, false);
-downloadBtn.addEventListener("click", () => hiddenLink.click());
-const zeropadding = (num, len = 2) => ("000000" + num).slice(-len);
-const timestamp = (date = new Date(), delimiter = "_") => (
-    ""
-    + date.getFullYear()
-    + zeropadding(1 + date.getMonth())
-    + zeropadding(date.getDate())
-    + delimiter
-    + zeropadding(date.getHours())
-    + zeropadding(date.getMinutes())
-    + zeropadding(date.getSeconds())
-);
+fileSelect.addEventListener("click", () => fileElem.click(), false);

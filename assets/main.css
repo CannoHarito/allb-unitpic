@@ -9,25 +9,48 @@ body {
     font: 1em/1.6 sans-serif;
     min-height: 100vh;
 }
-body > *{
+
+body>* {
     width: 100%;
 }
-.center{
+
+canvas {
+    background-color: #f0f0f0;
+}
+
+.control {
     text-align: center;
 }
-#images{
+
+.btn {
+    min-width: 32%;
+    display: inline-block;
+    padding: 0.5em;
+    background-color: white;
+    border: solid;
+    text-decoration: none;
+}
+
+.btn:any-link:hover {
+    opacity: .6;
+}
+
+#images {
     padding: 0;
     overflow-x: auto;
     white-space: nowrap;
 }
-#images > li{
+
+#images>li {
     display: inline-block;
     padding: 3px;
 }
-#images img{
+
+#images img {
     height: 10em;
     display: block;
 }
-.sorting{
+
+.sorting {
     background-color: blue;
 }
