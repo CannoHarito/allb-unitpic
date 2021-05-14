@@ -8,8 +8,8 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="1200"
-   height="600"
-   viewBox="0 0 317.49999 158.75001"
+   height="630"
+   viewBox="0 0 317.49999 166.68751"
    version="1.1"
    id="svg8"
    inkscape:version="1.0.2 (e86c870879, 2021-01-15, custom)"
@@ -61,7 +61,7 @@
      id="layer1">
     <g
        id="g1083"
-       transform="translate(0,-0.52915097)">
+       transform="translate(0,3.439599)">
       <g
          id="g1199"
          transform="translate(1.852083,-47.769708)">
@@ -539,7 +539,7 @@
     </g>
     <g
        id="g1475"
-       transform="translate(18.520845,-57.032637)">
+       transform="translate(18.520845,-53.063887)">
       <rect
          style="fill:#f7f6fb;fill-opacity:1;stroke:#23232d;stroke-width:0.79375;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="rect24-5"
@@ -740,7 +740,7 @@
     </g>
     <g
        id="g1087"
-       transform="translate(0,6.6147402)">
+       transform="translate(0,10.58349)">
       <path
          id="rect1477"
          style="fill:#008ec2;fill-opacity:1;stroke:none;stroke-width:0.381924;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
