@@ -106,7 +106,7 @@ async function updateCanvas(images = list.querySelectorAll("img")) {
     //     navigator.clipboard.write([item]).then(()=>alert("Copied! paste it on paint"));
     // });
     const d = new Date()
-    hiddenLink.setAttribute("download", "" + d.getFullYear() + d.getMonth() + d.getDate() + d.getHours() + d.getMinutes() + d.getSeconds())
+    hiddenLink.setAttribute("download", timestamp())
     hiddenLink.href = canvas.toDataURL();
     downloadBtn.disabled = false;
 }
@@ -115,3 +115,14 @@ dropbox.addEventListener("dragover", stopEvent, false);
 dropbox.addEventListener("drop", drop, false);
 fileElem.addEventListener("change", function () { hundleFiles(this.files); }, false);
 downloadBtn.addEventListener("click", () => hiddenLink.click());
+const zeropadding = (num, len = 2) => ("000000" + num).slice(-len);
+const timestamp = (date = new Date(), delimiter = "_") => (
+    ""
+    + date.getFullYear()
+    + zeropadding(1 + date.getMonth())
+    + zeropadding(date.getDate())
+    + delimiter
+    + zeropadding(date.getHours())
+    + zeropadding(date.getMinutes())
+    + zeropadding(date.getSeconds())
+);
