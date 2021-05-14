@@ -6,11 +6,28 @@ body {
     max-width: 60em;
     padding: 1em;
     margin: auto;
-    font: 1em/1.6 sans-serif
+    font: 1em/1.6 sans-serif;
+    min-height: 100vh;
 }
 body > *{
     width: 100%;
 }
-#images > img{
+.center{
+    text-align: center;
+}
+#images{
+    padding: 0;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+#images > li{
+    display: inline-block;
+    padding: 3px;
+}
+#images img{
     height: 10em;
+    display: block;
+}
+.sorting{
+    background-color: blue;
 }
