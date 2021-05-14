@@ -6,12 +6,15 @@
 <h1>Unitpic</h1>
 <p>ウニピク - アサルトリリィ Last Bulletのユニット編成のスクショを1枚の画像にまとめるツール</p>
 <canvas id="out" width="1280" height="538"></canvas>
-<input type="file" id="fileElem" multiple accept="image/*">
-<button id="download" disabled>保存</button><a id="hiddenlink" href="#" style="visibility: hidden;"></a>
+<div class="control">
+    <input type="file" id="fileElem" multiple accept="image/*" style="display: none;">
+    <a id="fileSelect" class="btn" href="javascript:void(0)">📁画像選択</a>
+    <a id="download" class="btn">💾保存</a>
+</div>
 <ul id="images"></ul>
 <ul>
     <li>メモリア欄のスクロールを一番上と一番下にした状態のスクショ2枚を読み込んで下さい。
-    <li>読み込んだ画像のサムネイルをクリックすることで並び変えることができます。
+    <li>読み込んだ画像のサムネイルを2つクリックすると並び変えることができます。
     <li>画像はブラウザ内で処理され外部に送信されることはありません。<br>
         気になる場合は、ページ表示後ネットワーク接続を切ってからお使い下さい。
 </ul>
