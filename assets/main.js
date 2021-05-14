@@ -2,10 +2,10 @@ const dropbox = document.querySelector("body"),
     fileElem = document.querySelector("#fileElem"),
     list = document.querySelector("#images"),
     canvas = document.querySelector("#out");
-
+const ctx = canvas.getContext("2d");
 const downloadBtn = document.querySelector("#download"),
     hiddenLink = document.querySelector("#hiddenlink");
-
+let sorting = null;
 
 function stopEvent(e) {
     // e.stopPropagation();
@@ -21,6 +21,7 @@ function drop(e) {
 function hundleFiles(files) {
     if (!files.length) return;
     list.innerHTML = "";
+    sorting = null;
     const loadPromises = [];
     for (let i = 0; i < files.length; i++) {//filesはargumentsのようなオブジェクト(Arrayでない)
         const file = files[i];
@@ -32,12 +33,28 @@ function hundleFiles(files) {
                 resolve(this);
             }
         }));
-        list.appendChild(img);
+        const li = document.createElement("li");
+        li.addEventListener("click", e => {
+            if (sorting) {
+                if (sorting != e.currentTarget) {
+                    const img1 = e.currentTarget.querySelector("img");
+                    e.currentTarget.appendChild(sorting.querySelector("img"));
+                    sorting.appendChild(img1);
+                    updateCanvas();
+                }
+                sorting.classList.remove("sorting");
+                sorting = null;
+            } else {
+                sorting = e.currentTarget;
+                sorting.classList.add("sorting");
+            }
+        }, false)
+        list.appendChild(li).appendChild(img);
     }
     Promise.all(loadPromises).then(images => updateCanvas(images))
 }
-const ctx = canvas.getContext("2d");
-function updateCanvas(images = list.querySelectorAll("img")) {
+
+async function updateCanvas(images = list.querySelectorAll("img")) {
     if (images.length < 2) return;
     const imgUp = images[0];//list.querySelectorAll("img")[0];
     const imgLow = images[1];//list.querySelectorAll("img")[1];
@@ -58,7 +75,6 @@ function updateCanvas(images = list.querySelectorAll("img")) {
     console.log({ width, height, offsetX, offsetY });
     canvas.width = width;
     canvas.height = height;
-    // ctx.drawImage(imgUp, 5, 134, 2470, 1235, 0, 0, 2470, 1235);
     ctx.drawImage(imgUp, offsetX, offsetY + header, width, height, 0, 0, width, height);
     const frameLeft = width * 0.485 | 0;
     const frameTop = width * 0.015 | 0;
@@ -85,19 +101,16 @@ function updateCanvas(images = list.querySelectorAll("img")) {
     ctx.drawImage(imgUp, memoLeft, memoTop[1], memoWidth, memoHight, frameLeft + yohakuW, frameTop + yohakuH * 2 + memoHight * 1, memoWidth, memoHight);
     ctx.drawImage(imgLow, memoLeft, memoTop[2], memoWidth, memoHight, frameLeft + yohakuW, frameTop + yohakuH * 3 + memoHight * 2, memoWidth, memoHight);
     ctx.drawImage(imgLow, memoLeft, memoTop[3], memoWidth, memoHight, frameLeft + yohakuW, frameTop + yohakuH * 4 + memoHight * 3, memoWidth, memoHight);
-    // canvas.toBlob(function (blob) {
+    // canvas.toBlob((blob)=>{
     //     const item = new ClipboardItem({ "image/png": blob });
-    //     navigator.clipboard.write([item]);
-    //     alert("Copied! paste it on paint");
+    //     navigator.clipboard.write([item]).then(()=>alert("Copied! paste it on paint"));
     // });
     const d = new Date()
-    // canvas.setAttribute("download", "" + d.getFullYear() + d.getMonth() + d.getDate() + d.getHours() + d.getMinutes() + d.getSeconds());
     hiddenLink.setAttribute("download", "" + d.getFullYear() + d.getMonth() + d.getDate() + d.getHours() + d.getMinutes() + d.getSeconds())
     hiddenLink.href = canvas.toDataURL();
     downloadBtn.disabled = false;
 }
 
-// dropbox.addEventListener("dragenter", stopEvent, false);
 dropbox.addEventListener("dragover", stopEvent, false);
 dropbox.addEventListener("drop", drop, false);
 fileElem.addEventListener("change", function () { hundleFiles(this.files); }, false);
