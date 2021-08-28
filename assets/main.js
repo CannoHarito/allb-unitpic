@@ -109,7 +109,7 @@ async function updateCanvas(images = list.querySelectorAll("img")) {
     const marginTop = (height - frameTop - memoHight * 4) / 5 | 0;
     const marginLeft = (frameRight - frameLeft - memoWidth) / 2 | 0;
     const memoLeft = offsetX + width * 0.51875 | 0;
-    const memoTop = [offsetY + width * 0.1890 | 0, offsetY + width * 0.3015 | 0, naturalHeight - width * 0.29335 | 0, naturalHeight - footer - memoHight];
+    const memoTop = [offsetY + width * 0.1890 | 0, offsetY + width * 0.3015 | 0, naturalHeight - width * 0.29335 - 0.015 * width | 0, naturalHeight - footer - memoHight - 0.015 * width | 0];
     ctx.drawImage(imgUp, memoLeft, memoTop[0], memoWidth, memoHight, frameLeft + marginLeft, frameTop + marginTop, memoWidth, memoHight);
     ctx.drawImage(imgUp, memoLeft, memoTop[1], memoWidth, memoHight, frameLeft + marginLeft, frameTop + marginTop * 2 + memoHight * 1, memoWidth, memoHight);
     ctx.drawImage(imgLow, memoLeft, memoTop[2], memoWidth, memoHight, frameLeft + marginLeft, frameTop + marginTop * 3 + memoHight * 2, memoWidth, memoHight);
