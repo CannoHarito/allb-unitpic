@@ -101,7 +101,7 @@ async function updateCanvas(top, bottom) {
             ctx.drawImage(base.img, ...base.ranges(statusFrame), ...draw.ranges(statusFrame, { yd: 0, yp: 1 }));
         }
         // draw frame of memoria
-        const mask = { xd: 0.4570, yd: 0.0094, wd: 0.5430, hd: 0.0391 };
+        const mask = { xd: 0.4516, yd: 0.0094, wd: 0.5484, hd: 0.0391 };
         ctx.fillStyle = "rgb(248,249,252)";
         ctx.fillRect(...draw.ranges(mask));
         const memoriaFrame = { xd: 0.4945, yd: 0.0047, wd: 0.5063, hd: 0.5586 };
