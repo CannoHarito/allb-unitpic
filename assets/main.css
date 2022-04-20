@@ -14,12 +14,22 @@ body>* {
     width: 100%;
 }
 
+.dropzone {
+    display: inline-block;
+    width: 50%;
+    border: 2px dashed;
+}
+
 canvas {
-    background: no-repeat center/75% url("./head.svg"), #f0f0f0;
+    width: 100%;
 }
 
 .control {
     text-align: center;
+}
+
+.control>* {
+    margin-top: 0.5em;
 }
 
 .btn {
@@ -36,21 +46,38 @@ canvas {
 }
 
 #images {
-    padding: 0;
-    overflow-x: auto;
-    white-space: nowrap;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1em;
 }
 
-#images>li {
-    display: inline-block;
-    padding: 3px;
+#images figure {
+    margin: 0;
+    height: 12em;
+    min-width: 16em;
+    position: relative;
+    background-color: #f0f0f0;
+    background-size: auto 8em;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 #images img {
     height: 10em;
-    display: block;
+    margin: 0.4em;
 }
 
-.sorting {
-    background-color: blue;
+#images figcaption {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+#memoria_top {
+    background-image: url("./memoria_top.png");
+}
+
+#memoria_bottom {
+    background-image: url("./memoria_bottom.png");
 }
