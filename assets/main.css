@@ -1,39 +1,46 @@
 * {
-    box-sizing: border-box
+    box-sizing: border-box;
 }
-
+html{
+    font-size: 100%;
+}
 body {
     max-width: 60em;
+    min-height: 100vh;
     padding: 1em;
     margin: auto;
     font: 1em/1.6 sans-serif;
-    min-height: 100vh;
 }
 
 body>* {
+    align-self: center;
+    margin:0 auto 1rem;
+}
+
+.w100{
     width: 100%;
+}
+.w50{
+    min-width: 49%;
+}
+.center{
+    text-align: center;
+}
+
+h1 {
+    border-bottom: 3px solid #7792d5;
+    display: inline-block;
 }
 
 .dropzone {
     display: inline-block;
-    width: 50%;
     border: 2px dashed;
-}
-
-canvas {
-    width: 100%;
-}
-
-.control {
-    text-align: center;
-}
-
-.control>* {
-    margin-top: 0.5em;
+    min-width: 50%;
+    font-size: 1rem;
 }
 
 .btn {
-    min-width: 32%;
+    font-size: 1rem;
     display: inline-block;
     padding: 0.5em;
     background-color: white;
@@ -45,39 +52,30 @@ canvas {
     opacity: .6;
 }
 
-#images {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1em;
-}
-
-#images figure {
-    margin: 0;
-    height: 12em;
-    min-width: 16em;
+figure {
+    display: inline-block;
+    margin: 0 0.5rem;
+    height: 12rem;
+    min-width: 16rem;
     position: relative;
     background-color: #f0f0f0;
-    background-size: auto 8em;
+    background-size: auto 8rem;
     background-position: center;
     background-repeat: no-repeat;
+    overflow: hidden;
 }
 
-#images img {
-    height: 10em;
-    margin: 0.4em;
+figure img {
+    height: 10rem;
+    position: absolute;
+    top: 0.5rem;
+    left: 50%;
+    transform: translate(-50%, 0);
 }
 
-#images figcaption {
+figure figcaption {
     position: absolute;
     bottom: 0;
     width: 100%;
-}
-
-#memoria_top {
-    background-image: url("./memoria_top.png");
-}
-
-#memoria_bottom {
-    background-image: url("./memoria_bottom.png");
+    font-size: 1rem;
 }

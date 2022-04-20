@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Unitpic</title>
 <meta name="description" content="ラスバレのユニット編成のスクショを1枚の画像にまとめるツール">
 <meta property="og:title" content="Unitpic">
@@ -8,12 +9,11 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="assets/main.css">
 
-<h1>Unitpic</h1>
+<h1 class="w100">Unitpic</h1>
 <p>
-    ウニピク - アサルトリリィ Last Bulletのユニット編成のスクショを1枚の画像にまとめるツール<br>
-    レジェンダリメモリア装備枠がない場合は、<a href="./v1-no_legendary">以前のバージョン</a>をお使いください。
+    『アサルトリリィ Last Bullet』のユニット編成のスクショを1枚の画像にまとめるツール
 </p>
-<div class="control">
+<div class="center">
     <label class="dropzone">
         画像読み込み方法<br>
         ・このエリアをクリックして開く<br>
@@ -21,20 +21,21 @@
         ・Ctrl+Vでペースト
         <input type="file" id="fileElem" multiple accept="image/*" hidden>
     </label>
-    <div id="images">
-        <figure id="memoria_top">
-            <figcaption>🔺メモリア上部</figcaption>
-        </figure>
-        <figure id="memoria_bottom">
-            <figcaption>🔻メモリア下部</figcaption>
-        </figure>
-    </div>
 </div>
-<div class="control" hidden>
-    <canvas id="out" width="1280" height="538"></canvas>
-    <a id="download" class="btn">💾保存</a>
+<div class="center">
+    <figure id="memoria_top" style="background-image: url('./assets/memoria_top.png');">
+        <figcaption>🔺メモリア上部</figcaption>
+    </figure>
+    <figure id="memoria_bottom" style="background-image: url('./assets/memoria_bottom.png');">
+        <figcaption>🔻メモリア下部</figcaption>
+    </figure>
+</div>
+<div class="center" hidden>
+    <canvas id="out" width="1280" height="720" class="w100"></canvas>
+    <a id="download" class="btn w50">💾保存</a>
 </div>
 <ul>
+    <li>レジェンダリメモリア装備枠がない場合は、<a href="./v1-no_legendary">以前のバージョン</a>をお使いください。
     <li>メモリア欄のスクロールを一番上と一番下にした状態のスクショ2枚を読み込んで下さい。
     <li>スクショの黒い余白に対応します。(左端のみ、幅200px以下のみ)
     <li>DMM版のウィンドウ枠に対応します。(スクショの幅:高さ=16n+2:9n+32)
