@@ -152,3 +152,20 @@ window.addEventListener("paste", e => {
     ).filter(item => item);
     hundleFiles(imgs);
 });
+
+const hundleSamples = async (...urls) => {
+    const sources = await Promise.all(
+        urls.map(url =>
+            new Promise(resolve => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.src = url;
+            }).then(img => newSource(img))
+        )
+    );
+    hundleSources(sources);
+};
+document.querySelector("#btn_sample").onclick = ({ currentTarget }) => {
+    hundleSamples("./samples/v0306-u01-m1-dmm-20220422.png", "./samples/v0306-u01-m0-opporeno5a-20220422.jpg");
+    currentTarget.style.display = "none";
+};
