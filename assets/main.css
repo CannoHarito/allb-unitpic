@@ -1,16 +1,19 @@
 * {
     box-sizing: border-box;
 }
-
+html{
+    font-size: 100%;
+}
 body {
     max-width: 60em;
     min-height: 100vh;
-    padding: 0 1em;
+    padding: 1em;
     margin: auto;
     font: 1em/1.6 sans-serif;
 }
 
 body>* {
+    align-self: center;
     margin:0 auto 1rem;
 }
 
@@ -34,43 +37,40 @@ h1 {
     border: 2px dashed;
     min-width: 50%;
     font-size: 1rem;
-    padding: 0 2rem;
 }
 
 .btn {
-    font-size: 0.9rem;
+    font-size: 1rem;
     display: inline-block;
-    padding: 0.5em 2em;
+    padding: 0.5em;
     background-color: white;
-    border: 1px solid;
+    border: solid;
     text-decoration: none;
-    border-radius: 4px;
 }
 
-.btn:hover {
+.btn:any-link:hover {
     opacity: .6;
 }
 
-.row{
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-}
-
 figure {
-    position: relative;
-    margin: 0;
+    display: inline-block;
+    margin: 0 0.5rem;
     height: 12rem;
-    flex-basis: 16rem;
-    background: #f0f0f0 center/contain no-repeat;
-    padding-top: .5rem;
+    min-width: 16rem;
+    position: relative;
+    background-color: #f0f0f0;
+    background-size: auto 8rem;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
 }
 
 figure img {
     height: 10rem;
-    width: 100%;
-    object-fit: contain;
-    background-color: inherit;
+    position: absolute;
+    top: 0.5rem;
+    left: 50%;
+    transform: translate(-50%, 0);
 }
 
 figure figcaption {
@@ -78,8 +78,4 @@ figure figcaption {
     bottom: 0;
     width: 100%;
     font-size: 1rem;
-}
-
-ul {
-    padding-left: inherit;
 }
