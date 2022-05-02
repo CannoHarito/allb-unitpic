@@ -86,7 +86,8 @@ const removeSource = (...sources) => {
 };
 
 async function updateCanvas(top, bottom) {
-    const base = top?.width < bottom?.width ? bottom : top;
+    const topWidth = top?.width, bottomWidth = bottom?.width;
+    const base = !topWidth && bottomWidth || topWidth < bottomWidth ? bottom : top;
     if (base) {
         const draw = new Drawing(base.width, { width: int(base.width * 0.975) });
         canvas.width = draw.width;
