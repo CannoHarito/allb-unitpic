@@ -116,7 +116,7 @@ async function updateCanvas(top, bottom) {
         const memoriaHeight = draw.vw(memoriaRow.hd);
         const marginTop = int((draw.height - memoriaHeight * 5) / 5.5);
         if (top) {
-            [0.1820, 0.3102].forEach((yd, i) =>
+            [0.1820, 0.3172].forEach((yd, i) =>
                 ctx.drawImage(top.img, ...top.ranges(memoriaRow, { yd }), ...draw.ranges(memoriaRow, { y: marginTop * (1 + i) + memoriaHeight * i }))
             );
             // ctx.drawImage(top.img, ...top.ranges(memoriaRow, { yd: 0.1820 }), ...draw.ranges(memoriaRow, { y: marginTop * 1 + memoriaHeight * 0 }));
@@ -167,6 +167,6 @@ const hundleSamples = async (...urls) => {
     hundleSources(sources);
 };
 document.querySelector("#btn_sample").onclick = ({ currentTarget }) => {
-    hundleSamples("./samples/v0306-u01-m1-dmm-20220422.png", "./samples/v0306-u01-m0-opporeno5a-20220422.jpg");
+    hundleSamples("./samples/v0309-u02-m1-opporeno5a-20220526.jpg", "./samples/v0309-u02-m0-dmm-20220526.png");
     currentTarget.style.display = "none";
 };
