@@ -1,0 +1,18 @@
+{
+  "tasks": {
+    "dev": "deno run --allow-net --allow-read jsr:@std/http/file-server",
+    "build": "esbuild ./main.ts --bundle --format=cjs --target=esnext --outfile=./main.js"
+  },
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "dom.asynciterable",
+      "esnext"
+    ]
+  },
+  "exclude": ["./main.js", "./v1-no_legendary/"],
+  "imports": {
+    "esbuild": "npm:esbuild@^0.24.0"
+  }
+}
