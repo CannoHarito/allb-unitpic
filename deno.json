@@ -1,18 +1,14 @@
 {
   "tasks": {
-    "dev": "deno run --allow-net --allow-read jsr:@std/http/file-server",
-    "build": "esbuild ./main.ts --bundle --format=cjs --target=esnext --outfile=./main.js"
+    "serve": "deno -NR jsr:@std/http/file-server",
+    "build": "deno -A jsr:@kt3k/pack ./main.ts -o ./main.js"
   },
   "compilerOptions": {
     "lib": [
       "dom",
       "dom.iterable",
-      "dom.asynciterable",
       "esnext"
     ]
   },
-  "exclude": ["./main.js", "./v1-no_legendary/"],
-  "imports": {
-    "esbuild": "npm:esbuild@^0.24.0"
-  }
+  "exclude": ["./main.js", "./v1-no_legendary/"]
 }
