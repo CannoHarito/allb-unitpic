@@ -7,7 +7,7 @@ import {
   ranges,
 } from "./drawing.ts";
 import type { Img, Rect, Unit } from "./drawing.ts";
-import samples from "./samples/list.json" with { type: "json" };
+import samples from "../samples/list.json" with { type: "json" };
 
 const fileElem = document.querySelector("#fileElem") as HTMLInputElement,
   download = document.querySelector("#download") as HTMLAnchorElement,
