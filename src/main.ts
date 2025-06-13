@@ -13,58 +13,79 @@ const fileElem = document.querySelector("#fileElem") as HTMLInputElement,
   download = document.querySelector("#download") as HTMLAnchorElement,
   canvas = document.querySelector("#out") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d")!;
+let memoriaTop = document.querySelector("#memoria_top") as HTMLImageElement,
+  memoriaBottom = document.querySelector("#memoria_bottom") as HTMLImageElement;
 
 interface Source extends Rect, Unit, Img {}
 let top: Source | undefined, bottom: Source | undefined;
 
+/** yyyyMMdd_HHmmss形式のタイムスタンプStringを得る */
+// "sv"（スウェーデン語）ロケールを使うことで、"yyyy-MM-dd HH:mm:ss" 形式になり、扱い易い。
 const timestamp = ({ date = new Date(), delimiter = "_" } = {}) =>
   date.toLocaleString("sv").replace(/\D/g, (a) => a == " " ? delimiter : "");
 
-const loadImage = (url: string) =>
-  new Promise<HTMLImageElement>((resolve) => {
-    const img = new Image();
-    img.addEventListener("load", () => resolve(img));
-    img.src = url;
-  });
-
-const getLuminance = (data: Uint8ClampedArray | number[], i = 0) =>
-  int(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]);
-const generateLuminances = function* (data: Uint8ClampedArray | number[]) {
-  for (let i = 0; i < data.length; i += 4) {
-    yield getLuminance(data, i);
-  }
+const loadImage = async (url: string) => {
+  const img = new Image();
+  img.src = url;
+  await img.decode();
+  URL.revokeObjectURL(url);
+  return img;
 };
+
+const calculateLuminance = (
+  r: number,
+  g: number,
+  b: number,
+) => (0.299 * r + 0.587 * g + 0.114 * b);
+/** RGBAの配列から最小輝度を求める */
+const getMinLuminance = (data: Uint8ClampedArray | number[]) => {
+  let min = Infinity;
+  for (let i = 0; i < data.length; i += 4) {
+    const luminance = calculateLuminance(data[i], data[i + 1], data[i + 2]);
+    if (luminance < min) {
+      min = luminance;
+    }
+  }
+  return min;
+};
+
 const isCloseTo = (a: number, b: number, { diff = 10 } = {}) =>
   Math.abs(a - b) < diff;
 
 type Scrollbar = "top" | "bottom" | "";
+// スクロールバーの輝度値（推定値）: 136はバー有り、246はバー無しを表す
+const SCROLLBAR_PRESENT_LUMINANCE = 136; // スクロールバーがあるときの最小輝度
+const SCROLLBAR_ABSENT_LUMINANCE = 246; // スクロールバーがないときの最小輝度
+
 const getScrollbar = (source: Source): Scrollbar => {
   const topRange = { xp: 0.5, yp: 0.5, xd: 0.9750, w: 5, h: 5, yd: 0.1705 };
   const bottomRange = { ...topRange, yf: 1, yd: -0.1005 };
   const [top, bottom] = [topRange, bottomRange].map((range) => {
     const data = getImageData(source, range).data;
-    return Math.min(...generateLuminances(data));
+    return getMinLuminance(data);
   });
-  if (isCloseTo(top, 136) && isCloseTo(bottom, 246)) return "top";
-  if (isCloseTo(top, 246) && isCloseTo(bottom, 136)) return "bottom";
+  if (
+    isCloseTo(top, SCROLLBAR_PRESENT_LUMINANCE) &&
+    isCloseTo(bottom, SCROLLBAR_ABSENT_LUMINANCE)
+  ) return "top";
+  if (
+    isCloseTo(top, SCROLLBAR_ABSENT_LUMINANCE) &&
+    isCloseTo(bottom, SCROLLBAR_PRESENT_LUMINANCE)
+  ) return "bottom";
   return "";
 };
 
-const hundleFiles = async (files: FileList | File[] | undefined) => {
+const handleFiles = async (files: FileList | File[] | undefined) => {
   if (files?.length) {
-    const sources = await Promise.all(
-      [...files].map(async (file) => {
-        const url = URL.createObjectURL(file);
-        const img = await loadImage(url);
-        URL.revokeObjectURL(url);
-        return newSource(img);
-      }),
+    const images = await Promise.all(
+      [...files].map((file) => loadImage(URL.createObjectURL(file))),
     );
-    hundleSources(sources);
+    handleImages(images);
   }
 };
 
-const hundleSources = (sources: Source[]) => {
+const handleImages = (images: HTMLImageElement[]) => {
+  const sources = images.map((img) => newSource(img));
   let newTop: Source | undefined = undefined,
     newBottom: Source | undefined = undefined;
   const remains: Source[] = [];
@@ -80,30 +101,23 @@ const hundleSources = (sources: Source[]) => {
   newBottom ??= remains.pop();
   if (newTop) {
     console.debug("update memoria_top");
-    const figure = document.querySelector("#memoria_top");
-    figure?.querySelectorAll("img").forEach((img) => img.remove());
-    const img = newTop.img;
-    if (img) figure?.appendChild(img);
+    memoriaTop.replaceWith(newTop.img);
+    memoriaTop = newTop.img;
     top = newTop;
   }
   if (newBottom) {
     console.debug("update memoria_bottom");
-    const figure = document.querySelector("#memoria_bottom")!;
-    figure.querySelectorAll("img").forEach((img) => img.remove());
-    const img = newBottom.img;
-    if (img) figure.appendChild(img);
+    memoriaBottom.replaceWith(newBottom.img);
+    memoriaBottom = newBottom.img;
     bottom = newBottom;
   }
   if (newTop || newBottom) {
     console.debug("update canvas");
-    updateCanvas({ top, bottom });
+    updateCanvas();
   }
 };
-
-function updateCanvas(
-  { top, bottom }: { top: Source | undefined; bottom: Source | undefined },
-) {
-  const base = (!top || bottom && top.w < bottom.w) ? bottom : top;
+function updateCanvas() {
+  const base = (!top || (bottom && top.w < bottom.w)) ? bottom : top;
   if (base) {
     const draw = newDrawing(base.w, { w: int(base.w * 0.975) });
     Object.assign(canvas, { width: draw.w, height: draw.h });
@@ -141,8 +155,8 @@ function updateCanvas(
     if (top) {
       [.1820, .3172].forEach((yd, i) =>
         ctx.drawImage(
-          top.img,
-          ...ranges(top, memoriaRow, { yd }),
+          top!.img,
+          ...ranges(top!, memoriaRow, { yd }),
           ...rangesDrawRow(i),
         )
       );
@@ -150,8 +164,8 @@ function updateCanvas(
     if (bottom) {
       [-0.4063, -0.2969, -0.1891].forEach((yd, i) =>
         ctx.drawImage(
-          bottom.img,
-          ...ranges(bottom, memoriaRow, { yf: 1, yd }),
+          bottom!.img,
+          ...ranges(bottom!, memoriaRow, { yf: 1, yd }),
           ...rangesDrawRow(2 + i),
         )
       );
@@ -171,11 +185,11 @@ function updateCanvas(
 globalThis.addEventListener("dragover", (e) => e.preventDefault());
 globalThis.addEventListener("drop", (e) => {
   e.preventDefault();
-  hundleFiles(e.dataTransfer?.files);
+  handleFiles(e.dataTransfer?.files);
 });
 fileElem.addEventListener(
-  "change",
-  (e) => hundleFiles((e.target as HTMLInputElement).files ?? undefined),
+  "input",
+  (e) => handleFiles((e.target as HTMLInputElement).files ?? undefined),
 );
 globalThis.addEventListener("paste", (e) => {
   const itemlist = e.clipboardData?.items;
@@ -183,20 +197,14 @@ globalThis.addEventListener("paste", (e) => {
   const imgFiles = [...itemlist].map((img) =>
     img.type.indexOf("image") !== -1 ? img.getAsFile() : false
   ).filter((item) => item) as File[];
-  hundleFiles(imgFiles);
+  handleFiles(imgFiles);
 });
-
-const hundleSamples = async (...pathes: string[]) => {
-  const sources = await Promise.all(
-    pathes.map(async (path) => newSource(await loadImage(path))),
-  );
-  hundleSources(sources);
-};
 if (samples?.length) {
   document.querySelector("#btn_sample")?.addEventListener(
     "click",
     ({ currentTarget }) => {
-      hundleSamples(...samples);
+      Promise.all(samples.map((path) => loadImage(path)))
+        .then((images) => handleImages(images));
       (currentTarget as HTMLButtonElement).style.display = "none";
     },
   );
