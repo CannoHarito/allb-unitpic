@@ -15,7 +15,7 @@ body>* {
 }
 
 canvas {
-    background: no-repeat center/75% url("./head.svg"), #f0f0f0;
+    background: no-repeat center/75% url("../images/head.svg"), #f0f0f0;
 }
 
 .control {
