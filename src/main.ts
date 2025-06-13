@@ -174,7 +174,9 @@ function updateCanvas() {
       URL.revokeObjectURL(download.href);
       download.href = "";
     }
-    canvas.parentElement && (canvas.parentElement.hidden = false);
+    if (canvas.parentElement?.hidden) {
+      canvas.parentElement.hidden = false;
+    }
     canvas.toBlob((blob) => {
       download.href = URL.createObjectURL(blob!);
       download.setAttribute("download", timestamp());
